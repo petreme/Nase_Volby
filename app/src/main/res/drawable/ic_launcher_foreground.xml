@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Red Shield Fill -->
+    <path
+        android:fillColor="#EE2436"
+        android:pathData="M32,24 L76,24 C76,24 76,58 76,58 C76,69 64,80 54,84 C44,80 32,69 32,58 C32,58 32,24 32,24 Z" />
+
+    <!-- Group with clip-path to keep Blue Hills inside the shield boundaries -->
+    <group>
+        <clip-path
+            android:pathData="M32,24 L76,24 C76,24 76,58 76,58 C76,69 64,80 54,84 C44,80 32,69 32,58 C32,58 32,24 32,24 Z" />
+        
+        <!-- Three Blue Hills -->
+        <path
+            android:fillColor="#0D47A1"
+            android:pathData="M25,78 C30,70 37,66 44,67 C48,68 50,63 54,58 C58,63 60,68 64,67 C71,66 78,70 83,78 L83,86 L25,86 Z" />
+    </group>
+
+    <!-- Shield Outline (Bold black border like in the logo) -->
+    <path
+        android:strokeColor="#111111"
+        android:strokeWidth="2.5"
+        android:pathData="M32,24 L76,24 C76,24 76,58 76,58 C76,69 64,80 54,84 C44,80 32,69 32,58 C32,58 32,24 32,24 Z" />
+
+    <!-- White Slovak Double Cross (with flared endpoints matching the logo) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52.5,31.5 C51,31 50.5,30 50.5,30 L57.5,30 C57.5,30 57,31 55.5,31.5 L55.5,36.5 L62,36.5 C63,35.5 64,35 64,35 L64,41.5 C64,41.5 63,41 62,40 L55.5,40 L55.5,45.5 L65,45.5 C66.5,44.5 67.5,44 67.5,44 L67.5,50.5 C67.5,50.5 66.5,50 65,49 L55.5,49 L55.5,61 L52.5,61 L52.5,49 L43,49 C41.5,50 40.5,50.5 40.5,50.5 L40.5,44 C40.5,44 41.5,44.5 43,45.5 L52.5,45.5 L52.5,40 L46,40 C45,41 44,41.5 44,41.5 L44,35 C44,35 45,35.5 46,36.5 L52.5,36.5 Z" />
+
+</vector>

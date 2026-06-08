@@ -1,0 +1,6 @@
+{
+  "name": "Moja Voľba",
+  "description": "Hlavná obrazovka a navigačné menu pre občiansku voľbu s bezpečným prístupom.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
