@@ -232,20 +232,11 @@ fun CivicAppUI() {
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
-                val cleanLogo = rememberCleanLogo(R.drawable.nase_volby_clean_logo_1780731853180)
-                if (cleanLogo != null) {
-                    Image(
-                        bitmap = cleanLogo,
-                        contentDescription = "Logo OZ Naše Voľby",
-                        modifier = Modifier.size(180.dp).padding(8.dp)
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.nase_volby_clean_logo_1780731853180),
-                        contentDescription = "Logo OZ Naše Voľby",
-                        modifier = Modifier.size(180.dp).padding(8.dp)
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.nase_volby_clean_logo_1780731853180),
+                    contentDescription = "Logo OZ Naše Voľby",
+                    modifier = Modifier.size(180.dp).padding(8.dp)
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -873,10 +864,767 @@ else if (currentScreen == "sub_hlasovania") {
             }
         }
     }
-    else if (currentScreen == "sub_kandidati") { /* ... sekcie pre kandidátov ... */ }
-    else if (currentScreen == "sub_obvody") { /* ... sprievodca obvodmi ... */ }
-    else if (currentScreen == "sub_info") { /* ... slovník cudzích pojmov ... */ }
-    else if (currentScreen == "settings") { /* ... zachované nastavenia ... */ }
+    else if (currentScreen == "sub_kandidati") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+                .safeDrawingPadding()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Pre kandidátov",
+                color = textColor,
+                fontSize = (24 * scale).sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+            )
+
+            Text(
+                text = "Informácie pre nezávislých občianskych kandidátov bez politickej príslušnosti:",
+                color = textColor.copy(alpha = 0.9f),
+                fontSize = (14 * scale).sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
+
+            // Card 1: Volebný program
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "📋 Volebný program", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Volebný program kandidáta na poslanca do NR SR vyžaduje transparentnosť a bezúhonnosť. Prečítajte si kompletné pokyny a vzory.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/?page_id=977"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť program na webe", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 2: Návrh platu
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "💰 Návrh platu úradníka", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Návrh na transparentnú výšku platu vysokého štátneho úradníka na základe odvedenej práce a spokojnosti občanov.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/?page_id=1002"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Zobraziť návrh platu", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 3: Petícia / Občiansky návrh
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "✍️ Občiansky návrh (Petícia)", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Podanie kvalifikovaného občianskeho návrhu a spustenie petície na referendum. Každý má právo predložiť zmysluplný návrh.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/?page_id=1008"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Zobraziť kvalifikované návrhy", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 4: Podpisový hárok kandidáta na kampaň
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "📄 Podpisový hárok kandidáta", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Vytlačte si podpisový hárok pre podporu nezávislých občianskych kandidátov pre ich kampaň. Každý hlas a podpis pomáha priblížiť zmenu.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/?page_id=1092"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť podpisový hárok", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { currentScreen = "menu" },
+                colors = ButtonDefaults.buttonColors(containerColor = borderColor),
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(text = "Naspäť do hlavného menu", color = textColor, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+    else if (currentScreen == "sub_obvody") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+                .safeDrawingPadding()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Sprievodca obvodmi",
+                color = textColor,
+                fontSize = (24 * scale).sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+            )
+
+            Text(
+                text = "Zistite informácie o vašom volebnom obvode a pridelených poslancoch:",
+                color = textColor.copy(alpha = 0.9f),
+                fontSize = (14 * scale).sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
+
+            // Card 1: Volebné obvody link
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "🗺️ Volebné obvody a mapy", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Volebné obvody v SR pre transparentný výber poslancov. Úplné zoznamy a geografické členenie nájdete na našom portáli.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/?page_id=10941"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť obvody a mapy", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 2: Môj obvod - poslanec
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "👥 Vyhľadať môjho poslanca", color = accentColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Vyhľadajte si priradeného poslanca podľa konkrétneho obvodu alebo ulice pre nadviazanie občianskeho dialógu.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/?page_id=11121"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Vyhľadať na webe", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Interactive local selector
+            var selectedKraj by remember { mutableStateOf("Vyberte kraj") }
+            var expandedKrajDropdown by remember { mutableStateOf(false) }
+
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "🇸🇰 Rýchle info podľa vašej polohy", color = Color.Yellow, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = { expandedKrajDropdown = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = cardColor),
+                            border = BorderStroke(1.dp, Color.Gray),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = selectedKraj, color = textColor)
+                        }
+                        DropdownMenu(
+                            expanded = expandedKrajDropdown,
+                            onDismissRequest = { expandedKrajDropdown = false },
+                            modifier = Modifier.fillMaxWidth(0.85f).background(cardColor)
+                        ) {
+                            val kraje = listOf(
+                                "Bratislavský kraj", "Trnavský kraj", "Trenčiansky kraj", 
+                                "Nitriansky kraj", "Žilinský kraj", "Banskobystrický kraj", 
+                                "Prešovský kraj", "Košický kraj"
+                            )
+                            kraje.forEach { kraj ->
+                                DropdownMenuItem(
+                                    text = { Text(text = kraj, color = textColor) },
+                                    onClick = {
+                                        selectedKraj = kraj
+                                        expandedKrajDropdown = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    if (selectedKraj != "Vyberte kraj") {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        val infoText = when (selectedKraj) {
+                            "Bratislavský kraj" -> "Bratislavský samosprávny kraj tvorí samostatnú silnú demografickú časť s vysokou volebnou účasťou. Zastúpenie v NR SR má vyčlenené na základe celkového počtu obyvateľov podľa sčítania."
+                            "Trnavský kraj" -> "Trnavský kraj disponuje dôležitými priemyselnými centrami. Volebné obvody zahŕňajú Trnavu, Dunajskú Stredu, Galantu, Hlohovec, Piešťany, Senicu a Skalicu."
+                            "Trenčiansky kraj" -> "Trenčiansky kraj má bohatú históriu a dôležité stredné Považie. Obvody pokrývajú Trenčín, Bánovce, Ilavu, Myjavu, Nové Mesto nad Váhom, Partizánske, Považskú Bystricu, Prievidzu a Púchov."
+                            "Nitriansky kraj" -> "Nitriansky kraj patrí medzi agrikultúrne jadro Slovenska. Volebné obvody zahŕňajú Nitru, Komárno, Levice, Nové Zámky, Šaliu, Topoľčany a Zlaté Moravce."
+                            "Žilinský kraj" -> "Žilinský kraj zahŕňa hornatý sever a stredné Slovensko. Reprezentuje obvody Žilina, Bytča, Čadca, Dolný Kubín, Kysucké Nové Mesto, Liptovský Mikuláš, Martin, Námestovo, Ružomberok, Turčianske Teplice a Tvrdošín."
+                            "Banskobystrický kraj" -> "Banskobystrický kraj je najväčším krajom v SR. Volebné obvody: Banská Bystrica, Banská Štiavnica, Brezno, Detva, Krupina, Lučenec, Poltár, Revúca, Rimavská Sobota, Veľký Krtíš, Zvolen, Žarnovica, Žiar nad Hronom."
+                            "Prešovský kraj" -> "Prešovský kraj je najľudnatejším samosprávnym krajom SR s dynamickým rozvojom a dôležitým severovýchodným obvodom."
+                            else -> "Košický kraj predstavuje dôležité priemyselné, vedecké a kultúrne centrum východného Slovenska."
+                        }
+                        Text(
+                            text = infoText,
+                            color = textColor,
+                            fontSize = (13 * scale).sp,
+                            lineHeight = (18 * scale).sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { currentScreen = "menu" },
+                colors = ButtonDefaults.buttonColors(containerColor = borderColor),
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(text = "Naspäť do hlavného menu", color = textColor, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+    else if (currentScreen == "sub_info") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+                .safeDrawingPadding()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Informácie a Slovník",
+                color = textColor,
+                fontSize = (24 * scale).sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+            )
+
+            Text(
+                text = "Prehľad dôležitých odkazov a výklad demokratických pojmov pod záštitou OZ Naše Voľby:",
+                color = textColor.copy(alpha = 0.9f),
+                fontSize = (14 * scale).sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 20.dp, start = 8.dp, end = 8.dp)
+            )
+
+            // 1. Všetko o zmene volebného systému.
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "🗳️ Všetko o zmene volebného systému.",
+                        color = Color.Yellow,
+                        fontSize = (15 * scale).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Kompletné informácie a kľúčové odpovede ohľadom pripravovanej reformy volebného systému.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp,
+                        lineHeight = (18 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť nasevolby.sk", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // 2. Takto budeme voliť a odvolávať poslancov...
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "📱 Takto budeme voliť a odvolávať poslancov, vysokých štátnych úradníkov, navrhovať a rušiť zákony a to všetko zadarmo, bezpečne a pohodlne odkiaľkoľvek",
+                        color = Color.Yellow,
+                        fontSize = (14 * scale).sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = (19 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Vyskúšajte si modernú, bezpečnú a bezplatnú priamu účasť na chode štátu z mobilu cez hlasovací portál.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp,
+                        lineHeight = (18 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://hlasujeme.nasevolby.sk/"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť hlasovací portál", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // 3. Takto túto zmenu spoločne presadíme...
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(2.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "🤝 Takto túto zmenu spoločne presadíme a nikto nám v tom nezabráni.",
+                        color = Color.Yellow,
+                        fontSize = (14 * scale).sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = (19 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Pozrite si podrobný občiansky, ústavný a strategický akčný plán pre úspešné dosiahnutie cieľov.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp,
+                        lineHeight = (18 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Zobraziť akčný plán", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Ostatné okná s info pojmami (Ostatné okná s info)
+            val terms = listOf(
+                Pair("Priama Demokracia", "Demokratická forma vlády, v ktorej o dôležitých verejných otázkach rozhoduje väčšina občanov priamo hlasovaním (referendom), a nie len prostredníctvom volených zástupcov."),
+                Pair("Občiansky Návrh", "Možnosť každého občana predložiť transparentný návrh alebo zákon. Ak získa predpísanú podporu, stáva sa záväzným pre zváženie alebo hlasovanie celým národom."),
+                Pair("KEP (Kvalifikovaný Elektronický Podpis)", "Bezpečný kryptografický podpis certifikovaný štátom, ktorý jednoznačne potvrdzuje identitu občana v offline aj online prostredí, pričom zachováva plnú integritu úkonu."),
+                Pair("Bezpartijný Funkcionár", "Odborník nominovaný priamo občanmi do verejnej funkcie (ako ministerstvo), ktorý nie je členom žiadnej politickej strany, vďaka čomu háji záujmy výhradne všetkých občanov."),
+                Pair("Slovník cudzích pojmov (Celý)", "Úplný a podrobný legislatívny slovník cudzích slov pre uľahčenie participácie občanov na chode štátu.")
+            )
+
+            terms.forEach { term ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    colors = CardDefaults.cardColors(containerColor = cardColor),
+                    border = BorderStroke(1.dp, borderColor.copy(alpha = 0.6f))
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Text(text = term.first, color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(text = term.second, color = textColor, fontSize = (13 * scale).sp, lineHeight = (18 * scale).sp)
+                        
+                        if (term.first == "Slovník cudzích pojmov (Celý)") {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Button(
+                                onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.poslednereferendum.nasevolby.sk/?page_id=994"))) },
+                                colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = "Otvoriť kompletný slovník", color = textColor, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Nové spodné podporné a informačné linky
+            // Card 4: Ak chcete podporiť túto jedinečnú zmenu Kliknite sem
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "❤️ Ak chcete podporiť túto jedinečnú zmenu Kliknite sem",
+                        color = Color.Yellow,
+                        fontSize = (15 * scale).sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = (19 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Každý jeden dobrovoľník, príspevok a podpora našej spoločnej iniciatívy má obrovskú váhu.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/?page_id=6086"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Podporiť našu iniciatívu", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 5: Kontakt
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "📞 Kontakt",
+                        color = Color.Yellow,
+                        fontSize = (15 * scale).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Máte nejaké otázky, podnety alebo návrhy? Spojte sa s nami cez náš kontaktný portál.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/?page_id=7044"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Otvoriť kontaktné údaje", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Card 6: Kto sme
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "👥 Kto sme",
+                        color = Color.Yellow,
+                        fontSize = (15 * scale).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Zoznámte sa s naším príbehom, cieľmi a víziami pre transparentnejšiu občiansku spoločnosť.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nasevolby.sk/?page_id=175"))) },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Zistiť viac o nás", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { currentScreen = "menu" },
+                colors = ButtonDefaults.buttonColors(containerColor = borderColor),
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(text = "Naspäť do hlavného menu", color = textColor, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+    else if (currentScreen == "settings") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+                .safeDrawingPadding()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "⚙️ Nastavenia aplikácie",
+                color = textColor,
+                fontSize = (24 * scale).sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+            )
+
+            Text(
+                text = "Prispôsobte si aplikáciu podľa svojich potrieb:",
+                color = textColor.copy(alpha = 0.9f),
+                fontSize = (14 * scale).sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
+
+            // Settings Card 1: Jazyk
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "🌐 Výber jazyka", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = language == "SK",
+                                onClick = { language = "SK" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Slovenčina (SK)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = language == "EN",
+                                onClick = { language = "EN" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "English (EN)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                    }
+                }
+            }
+
+            // Settings Card 2: Veľkosť písma
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "🔎 Veľkosť písma", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = textDisplaySize == "Štandardné",
+                                onClick = { textDisplaySize = "Štandardné" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Štandardné", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = textDisplaySize == "Zväčšené",
+                                onClick = { textDisplaySize = "Zväčšené" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Zväčšené (+25%)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                    }
+                }
+            }
+
+            // Settings Card 3: Grafická téma
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "🎨 Grafická téma", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = graphicTheme == "Slovenské farby",
+                                onClick = { graphicTheme = "Slovenské farby" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Vlastenecká téma (Slovenské farby)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = graphicTheme == "Tmavý vesmír",
+                                onClick = { graphicTheme = "Tmavý vesmír" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Tmavý kozmický režim (Modrá / Sivá)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                    }
+                }
+            }
+
+            // Settings Card 4: Režim rozloženia menu
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "📱 Typ zobrazenia menu", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = layoutMode == "Dlaždice",
+                                onClick = { layoutMode = "Dlaždice" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Dlaždice (Grid)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = layoutMode == "Zoznam",
+                                onClick = { layoutMode = "Zoznam" },
+                                colors = RadioButtonDefaults.colors(selectedColor = accentColor, unselectedColor = Color.Gray)
+                            )
+                            Text(text = "Zoznam (List)", color = textColor, fontSize = (14 * scale).sp)
+                        }
+                    }
+                }
+            }
+
+            // Card 5: Verzia aplikácie a kontrola aktualizácií
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "ℹ️ O aplikácii", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Názov: Moja Voľba", color = textColor, fontSize = (13 * scale).sp)
+                    Text(text = "Verzia: 3.0 (Zostavenie 3)", color = Color.LightGray, fontSize = (13 * scale).sp)
+                    Text(text = "Záštita: Občianske združenie Naše Voľby", color = Color.LightGray, fontSize = (13 * scale).sp)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    Button(
+                        onClick = {
+                            isCheckingUpdate = true
+                            updateResultText = null
+                            coroutineScope.launch {
+                                delay(1200)
+                                isCheckingUpdate = false
+                                updateResultText = "Verzia 3.0 je plne aktuálna."
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (isCheckingUpdate) {
+                            CircularProgressIndicator(color = textColor, modifier = Modifier.size(20.dp))
+                        } else {
+                            Text(text = "🚀 Skontrolovať aktualizácie", color = textColor, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    updateResultText?.let { result ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = result, color = Color.Green, fontSize = (13 * scale).sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { currentScreen = "menu" },
+                colors = ButtonDefaults.buttonColors(containerColor = borderColor),
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(text = "Uložiť a vrátiť sa do menu", color = textColor, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
 }
 
 @Composable
