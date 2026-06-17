@@ -65,22 +65,55 @@ fun rememberCleanLogo(resourceId: Int): ImageBitmap? {
                 val height = original.height
                 val pixels = IntArray(width * height)
                 original.getPixels(pixels, 0, width, 0, 0, width, height)
-                for (i in pixels.indices) {
-                    val x = i % width
-                    val y = i / width
-                    
-                    if (x < 6 || x >= width - 6 || y < 6 || y >= height - 6) {
-                        pixels[i] = 0x00000000
-                    } else {
-                        val color = pixels[i]
-                        val r = (color shr 16) and 0xFF
-                        val g = (color shr 8) and 0xFF
-                        val b = color and 0xFF
-                        if (r < 75 && g < 75 && b < 75) {
-                            pixels[i] = 0x00000000
+                
+                // Flood fill starting from all edges to remove white/off-white background safely
+                val visited = BooleanArray(width * height)
+                val queue = java.util.ArrayDeque<Int>()
+                
+                fun push(x: Int, y: Int) {
+                    if (x in 0 until width && y in 0 until height) {
+                        val idx = y * width + x
+                        if (!visited[idx]) {
+                            visited[idx] = true
+                            queue.add(idx)
                         }
                     }
                 }
+                
+                // Seed border pixels
+                for (x in 0 until width) {
+                    push(x, 0)
+                    push(x, height - 1)
+                }
+                for (y in 0 until height) {
+                    push(0, y)
+                    push(width - 1, y)
+                }
+                
+                while (!queue.isEmpty()) {
+                    val idx = queue.poll() ?: break
+                    val x = idx % width
+                    val y = idx / width
+                    
+                    val color = pixels[idx]
+                    val a = (color shr 24) and 0xFF
+                    val r = (color shr 16) and 0xFF
+                    val g = (color shr 8) and 0xFF
+                    val b = color and 0xFF
+                    
+                    // We flood fill if the pixel is white, light grey, or already transparent.
+                    // This stops at the Slovak shield outline/red/blue components.
+                    val isBg = (r > 200 && g > 200 && b > 200) || a < 50
+                    
+                    if (isBg) {
+                        pixels[idx] = 0x00000000 // Force alpha to 0 (fully transparent)
+                        push(x + 1, y)
+                        push(x - 1, y)
+                        push(x, y + 1)
+                        push(x, y - 1)
+                    }
+                }
+                
                 val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                 result.setPixels(pixels, 0, width, 0, 0, width, height)
                 result.asImageBitmap()
@@ -116,6 +149,7 @@ fun CivicAppUI() {
     var currentScreen by remember { mutableStateOf("splash") }
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    var showFeedbackDialog by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
     var isCheckingUpdate by remember { mutableStateOf(false) }
@@ -207,58 +241,83 @@ fun CivicAppUI() {
         }
     }
 
+    LaunchedEffect(currentScreen) {
+        // No automatic transition here. User decides when to proceed by clicking the button!
+    }
+
     if (currentScreen == "splash") {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor)
+                .background(Color(0xFF0B2240))
                 .safeDrawingPadding()
-                .padding(16.dp)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .border(BorderStroke(3.dp, borderColor), RoundedCornerShape(16.dp))
-                    .padding(20.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .border(2.dp, Color(0xFFEE2436), RoundedCornerShape(24.dp))
+                    .padding(24.dp)
             ) {
-                Text(
-                    text = "Moja voľba",
-                    color = textColor,
-                    fontSize = (32 * scale).sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.nase_volby_clean_logo_1780731853180),
-                    contentDescription = "Logo OZ Naše Voľby",
-                    modifier = Modifier.size(180.dp).padding(8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "Máte pred sebou jedinečný demokratický nástroj na spravodlivé riadenie štátu.\nVáš hlas v tejto aplikácii má veľkú silu a osobnú zodpovednosť. Môže rozhodnúť o spravodlivosti a prosperite v našej krajine. Využite to a urobte našu krajinu takú, ako si želá väčšina občanov.",
-                    color = textColor,
-                    fontSize = (16 * scale).sp,
-                    textAlign = TextAlign.Center,
-                    lineHeight = (24 * scale).sp,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Button(
-                    onClick = { currentScreen = "menu" },
-                    colors = ButtonDefaults.buttonColors(containerColor = accentColor),
-                    border = BorderStroke(1.5.dp, textColor),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Vyberte si", color = textColor, fontSize = (18 * scale).sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Text(
+                        text = "Moja voľba",
+                        color = Color.White,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_splash_logo_clean),
+                        contentDescription = "Logo Moja Voľba",
+                        modifier = Modifier
+                            .size(220.dp)
+                            .padding(8.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Text(
+                        text = "Máte pred sebou jedinečný demokratický nástroj na spravodlivé riadenie štátu. Váš hlas v tejto aplikácii má veľkú silu a osobnú zodpovednosť. Môže rozhodnúť o spravodlivosti a prosperite v našej krajine. Využite to a urobte našu krajinu takú, ako si želá väčšina občanov.",
+                        color = Color.White,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 24.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(24.dp))
+                    
+                    Button(
+                        onClick = { currentScreen = "menu" },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFEE2436),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                    ) {
+                        Text(
+                            text = "Vyberte si",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
@@ -555,12 +614,11 @@ else if (currentScreen == "sub_hlasovania") {
                                         contentScale = ContentScale.Crop
                                     )
                                 } else {
-                                    val cleanLogo = rememberCleanLogo(person.placeholderRes)
-                                    if (cleanLogo != null) {
-                                        Image(bitmap = cleanLogo, contentDescription = "Logo", modifier = Modifier.size(45.dp))
-                                    } else {
-                                        Text(text = "📷", fontSize = 24.sp)
-                                    }
+                                    Image(
+                                        painter = painterResource(id = person.placeholderRes),
+                                        contentDescription = "Logo",
+                                        modifier = Modifier.size(40.dp)
+                                    )
                                 }
                             }
 
@@ -1139,6 +1197,82 @@ else if (currentScreen == "sub_hlasovania") {
                             fontSize = (13 * scale).sp,
                             lineHeight = (18 * scale).sp
                         )
+
+                        // Štatistické údaje priradené ku každému kraju (podľa oficiálneho návrhu reformy)
+                        class TempKrajStats(
+                            val kod: String,
+                            val pocetObyv: String,
+                            val rozloha: String,
+                            val hustota: String,
+                            val obceMiest: String,
+                            val zTohoMiest: String,
+                            val pocetOkresov: String
+                        )
+
+                        val stats = when (selectedKraj) {
+                            "Banskobystrický kraj" -> TempKrajStats("601", "607 581", "809,4 km²", "137 / km²", "42", "1", "13")
+                            "Trenčiansky kraj" -> TempKrajStats("301", "565 572", "461,9 km²", "79 / km²", "43", "1", "9")
+                            "Bratislavský kraj" -> TempKrajStats("101", "739 635", "9,6 km²", "4 285 / km²", "—", "—", "8")
+                            "Žilinský kraj" -> TempKrajStats("501", "684 190", "281,6 km²", "110 / km²", "12", "1", "11")
+                            "Trnavský kraj" -> TempKrajStats("201", "565 462", "1 074,6 km²", "113 / km²", "67", "4", "7")
+                            "Prešovský kraj" -> TempKrajStats("702", "810 075", "754,2 km²", "82 / km²", "62", "1", "13")
+                            "Košický kraj" -> TempKrajStats("802", "777 933", "85,4 km²", "791 / km²", "—", "—", "11")
+                            "Nitriansky kraj" -> TempKrajStats("402", "661 995", "1 551,1 km²", "72 / km²", "89", "4", "7")
+                            else -> null
+                        }
+
+                        if (stats != null) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "📊 Štatistické údaje (Reforma):",
+                                color = Color.Yellow,
+                                fontSize = (14 * scale).sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White.copy(alpha = 0.07f), RoundedCornerShape(8.dp))
+                                    .padding(12.dp)
+                            ) {
+                                val rowData = listOf(
+                                    Pair("🔢 Kód kraja", stats.kod),
+                                    Pair("👥 Počet obyvateľov", stats.pocetObyv),
+                                    Pair("🗺️ Rozloha", stats.rozloha),
+                                    Pair("📉 Počet obyv/km²", stats.hustota),
+                                    Pair("🏘️ Počet obcí a miest", stats.obceMiest),
+                                    Pair("🏙️ Z toho miest", stats.zTohoMiest),
+                                    Pair("📁 Počet okresov", stats.pocetOkresov)
+                                )
+                                
+                                rowData.forEachIndexed { index, pair ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 5.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = pair.first,
+                                            color = textColor.copy(alpha = 0.8f),
+                                            fontSize = (12 * scale).sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Text(
+                                            text = pair.second,
+                                            color = textColor,
+                                            fontSize = (12 * scale).sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    if (index < rowData.size - 1) {
+                                        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.White.copy(alpha = 0.12f)))
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1401,6 +1535,40 @@ else if (currentScreen == "sub_hlasovania") {
                 }
             }
 
+            // Card 7: Spätná väzba
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .clickable { showFeedbackDialog = true },
+                colors = CardDefaults.cardColors(containerColor = cardColor),
+                border = BorderStroke(1.5.dp, borderColor)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = "💬 Spätná väzba",
+                        color = Color.Yellow,
+                        fontSize = (15 * scale).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Poprosíme o vaše akékoľvek pripomienky k tejto, alebo webovej aplikácii. Kliknite pre viac info.",
+                        color = textColor,
+                        fontSize = (13 * scale).sp,
+                        lineHeight = (18 * scale).sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = { showFeedbackDialog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Zistiť podrobnosti", color = textColor, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { currentScreen = "menu" },
@@ -1583,7 +1751,7 @@ else if (currentScreen == "sub_hlasovania") {
                     Text(text = "ℹ️ O aplikácii", color = accentColor, fontSize = (16 * scale).sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Názov: Moja Voľba", color = textColor, fontSize = (13 * scale).sp)
-                    Text(text = "Verzia: 3.0 (Zostavenie 3)", color = Color.LightGray, fontSize = (13 * scale).sp)
+                    Text(text = "Verzia: ${com.example.BuildConfig.VERSION_NAME} (Zostavenie ${com.example.BuildConfig.VERSION_CODE})", color = Color.LightGray, fontSize = (13 * scale).sp)
                     Text(text = "Záštita: Občianske združenie Naše Voľby", color = Color.LightGray, fontSize = (13 * scale).sp)
                     Spacer(modifier = Modifier.height(12.dp))
                     
@@ -1594,7 +1762,7 @@ else if (currentScreen == "sub_hlasovania") {
                             coroutineScope.launch {
                                 delay(1200)
                                 isCheckingUpdate = false
-                                updateResultText = "Verzia 3.0 je plne aktuálna."
+                                updateResultText = "Verzia ${com.example.BuildConfig.VERSION_NAME} je plne aktuálna."
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = accentColor),
@@ -1624,6 +1792,57 @@ else if (currentScreen == "sub_hlasovania") {
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    if (showFeedbackDialog) {
+        AlertDialog(
+            onDismissRequest = { showFeedbackDialog = false },
+            title = {
+                Text(
+                    text = "💬 Spätná väzba",
+                    color = accentColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = (18 * scale).sp
+                )
+            },
+            text = {
+                Text(
+                    text = "Poprosíme o vaše akékoľvek pripomienky k tejto, alebo webovej aplikácii. Tie posielajte na:\n\noz@nasevolby.sk\n\nĎakujeme",
+                    color = Color.White,
+                    fontSize = (15 * scale).sp,
+                    lineHeight = (22 * scale).sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_SENDTO).apply {
+                            data = Uri.parse("mailto:oz@nasevolby.sk")
+                            putExtra(Intent.EXTRA_SUBJECT, "Pripomienky k aplikácii Moja Voľba")
+                        }
+                        try {
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Nepodarilo sa otvoriť e-mailového klienta", Toast.LENGTH_SHORT).show()
+                        }
+                        showFeedbackDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = accentColor)
+                ) {
+                    Text(text = "Poslať e-mail", color = textColor, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showFeedbackDialog = false }
+                ) {
+                    Text(text = "Zavrieť", color = Color.Gray, fontWeight = FontWeight.Bold)
+                }
+            },
+            containerColor = cardColor,
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 
