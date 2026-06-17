@@ -20,8 +20,8 @@ android {
     applicationId = "com.aistudio.mojavolba.kymcrv"
     minSdk = 24
     targetSdk = 36
-    versionCode = 15
-    versionName = "15.0"
+    versionCode = 17
+    versionName = "17.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -293,7 +293,7 @@ tasks.register("generateCleanTransparentLogo") {
         val cropH = (maxLogoY + padY).coerceAtMost(height - 1) - cropY + 1
         
         val cropped = outImage.getSubimage(cropX, cropY, cropW, cropH)
-        val maxTargetDim = (targetSize * 0.76).toInt() // 389 pixels (76% safe radius)
+        val maxTargetDim = (targetSize * 0.66).toInt() // 337 pixels (66% safe radius)
         val scale = Math.min(maxTargetDim.toDouble() / cropW, maxTargetDim.toDouble() / cropH)
         val drawW = (cropW * scale).toInt()
         val drawH = (cropH * scale).toInt()
@@ -303,7 +303,7 @@ tasks.register("generateCleanTransparentLogo") {
         g.drawImage(cropped, drawX, drawY, drawW, drawH, null)
       } else {
         // Fallback
-        val maxTargetDim = (targetSize * 0.76).toInt()
+        val maxTargetDim = (targetSize * 0.66).toInt()
         val scale = Math.min(maxTargetDim.toDouble() / width, maxTargetDim.toDouble() / height)
         val drawW = (width * scale).toInt()
         val drawH = (height * scale).toInt()
